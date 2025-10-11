@@ -1,0 +1,53 @@
+{
+  "name": "@fallid/forum-api",
+  "version": "1.0.0",
+  "description": "Example project by forums study case",
+  "keywords": [
+    "Forums",
+    "API",
+    "Hapi",
+    "Framework",
+    "Clean-Architecture"
+  ],
+  "homepage": "https://github.com/Fallid/Forum-API#readme",
+  "bugs": {
+    "url": "https://github.com/Fallid/Forum-API/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fallid/Forum-API.git"
+  },
+  "license": "MIT",
+  "author": "Ahmad Naufal",
+  "type": "commonjs",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "jest --runInBand --setupFiles dotenv/config",
+    "test:watch": "jest --watchAll --runInBand --coverage --setupFiles  dotenv/config",
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate",
+    "migrate:test": "node-pg-migrate --envPath .test.env",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.4.3",
+    "@hapi/jwt": "^3.2.1",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "instances-container": "^2.0.6",
+    "nanoid": "^5.1.6",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-security": "^3.0.1",
+    "globals": "^16.4.0",
+    "jest": "^30.2.0",
+    "node-pg-migrate": "^8.0.3",
+    "nodemon": "^3.1.10"
+  }
+}
