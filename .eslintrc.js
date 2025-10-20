@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es2021: true,
     node: true,
+    jest: true,
   },
   plugins: [
     'security',
@@ -16,7 +17,8 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-underscore-dangle': 'off',
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
     'linebreak-style': ['off'],
+    'class-methods-use-this': 'off',
   },
 };
