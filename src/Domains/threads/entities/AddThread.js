@@ -2,10 +2,11 @@ class AddThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
-    const { title, body } = payload;
+    const { title, body, owner } = payload;
 
     this.title = title;
     this.body = body;
+    this.owner = owner;
   }
 
   _verifyPayload(payload) {
@@ -18,12 +19,12 @@ class AddThread {
     }
   }
 
-  _isPayloadContainNeededProperty({ title, body }) {
-    return (!title || !body);
+  _isPayloadContainNeededProperty({ title, body, owner }) {
+    return (!title || !body || !owner);
   }
 
-  _isPayloadMeetDataTypeSpecification({ title, body }) {
-    return (typeof title !== 'string' || typeof body !== 'string');
+  _isPayloadMeetDataTypeSpecification({ title, body, owner }) {
+    return (typeof title !== 'string' || typeof body !== 'string' || typeof owner !== 'string');
   }
 }
 
