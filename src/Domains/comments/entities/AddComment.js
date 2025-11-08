@@ -2,9 +2,10 @@ class AddComment {
   constructor(payload) {
     this._verifyPayload(payload);
 
-    const { content, owner } = payload;
+    const { content, owner, threadId } = payload;
     this.content = content;
     this.owner = owner;
+    this.threadId = threadId;
   }
 
   _verifyPayload(payload) {
@@ -17,12 +18,12 @@ class AddComment {
     }
   }
 
-  _isPayloadContainNeededProperty({ content, owner }) {
-    return (!content || !owner);
+  _isPayloadContainNeededProperty({ content, owner, threadId }) {
+    return (!content || !owner || !threadId);
   }
 
-  _isPayloadMeetDataTypeSpecification({ content, owner }) {
-    return (typeof content !== 'string' || typeof owner !== 'string');
+  _isPayloadMeetDataTypeSpecification({ content, owner, threadId }) {
+    return (typeof content !== 'string' || typeof owner !== 'string' || typeof threadId !== 'string');
   }
 }
 
