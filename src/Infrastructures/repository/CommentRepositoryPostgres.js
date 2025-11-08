@@ -9,12 +9,13 @@ class CommentRepositoryPostgres extends CommentRepository {
   }
 
   async addComment(addComment) {
-    const { content, owner } = addComment;
+    const { content, owner, threadId } = addComment;
     const id = `comment-${this._idGenerator()}`;
+    const date = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3) RETURNING id, content, owner',
-      values: [id, content, owner],
+      text: 'INSERT INTO comments (id, content, date, owner, thread_id) VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
+      values: [id, content, date, owner, threadId],
     };
 
     const result = await this._pool.query(query);
