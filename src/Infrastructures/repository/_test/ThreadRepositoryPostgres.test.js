@@ -84,5 +84,13 @@ describe('ThreadRepositoryPostgres', () => {
       // Assert
       expect(thread).toStrictEqual(expectedThread);
     });
+
+    it('should throw NotFoundError when thread is not found', async () => {
+      // Arrange
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(threadRepositoryPostgres.getThreadById('thread-xxx')).rejects.toThrowError('thread tidak ditemukan');
+    });
   });
 });
