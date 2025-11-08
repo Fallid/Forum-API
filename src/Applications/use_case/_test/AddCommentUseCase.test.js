@@ -1,5 +1,6 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepostiory');
 const AuthenticationTokenManager = require('../../security/AuthenticationTokenManager');
 const AddCommentUseCase = require('../AddCommentUseCase');
 
@@ -8,6 +9,10 @@ describe('AddCommentUseCase', () => {
     // Arrange
     const useCasePayload = {
       content: 'comment content',
+    };
+
+    const useCaseParams = {
+      threadId: 'thread-123',
     };
 
     const headerAuthorization = 'Bearer accessToken';
@@ -22,26 +27,32 @@ describe('AddCommentUseCase', () => {
 
     // creating depedencies of use case
     const mockCommentRepository = new CommentRepository();
+    const mockThreadRepository = new ThreadRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
 
     // mocking needed function
-    mockAuthenticationTokenManager.verifyAccessToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.extractAccessToken = jest.fn()
       .mockImplementation(() => Promise.resolve(accessToken));
+    mockAuthenticationTokenManager.verifyAccessToken = jest.fn()
+      .mockImplementation(() => Promise.resolve());
     mockAuthenticationTokenManager.decodePayload = jest.fn()
       .mockImplementation(() => Promise.resolve({ username: 'JohnDoe', id: expectedAddedComment.owner }));
+    mockThreadRepository.getThreadById = jest.fn()
+      .mockImplementation(() => Promise.resolve());
     mockCommentRepository.addComment = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAddedComment));
 
     // creating use case instance
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
       authenticationTokenManager: mockAuthenticationTokenManager,
     });
 
     // Action
-    const addedComment = await addCommentUseCase.execute(useCasePayload, headerAuthorization);
+    const addedComment = await addCommentUseCase.execute(
+      useCasePayload, useCaseParams, headerAuthorization,
+    );
 
     // Assert
     expect(addedComment).toStrictEqual(new AddedComment({
