@@ -61,4 +61,28 @@ describe('ThreadRepositoryPostgres', () => {
       }));
     });
   });
+
+  describe('getThreadById function', () => {
+    it('should return thread when thread is exist', async () => {
+      const threadDate = new Date('2025-11-08T08:09:53.758Z');
+      const expectedThread = {
+        id: 'thread-123',
+        title: 'thread title',
+        body: 'thread body',
+        date: threadDate,
+        username: 'dicoding',
+      };
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: expectedThread.username });
+      await ThreadTableTestHelper.addThread({
+        id: 'thread-123', title: 'thread title', body: 'thread body', date: threadDate,
+      });
+
+      // Action
+      const thread = await threadRepositoryPostgres.getThreadById('thread-123');
+
+      // Assert
+      expect(thread).toStrictEqual(expectedThread);
+    });
+  });
 });
