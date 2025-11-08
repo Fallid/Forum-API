@@ -25,8 +25,13 @@ exports.up = (pgm) => {
       notNull: true,
       default: false,
     },
+    thread_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
   });
 
+  pgm.createConstraint('comments', 'fk_comments.thread_id_thread.id', 'FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE');
   pgm.createConstraint('comments', 'fk_comments.owner_user.id', 'FOREIGN KEY (owner) REFERENCES users(id) ON DELETE CASCADE');
 };
 
