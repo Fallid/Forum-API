@@ -13,7 +13,7 @@ describe('a AddedThread entities', () => {
     expect(() => new AddedThread(payload)).toThrowError('ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
-  it('should throw error when payload did meet data type specification', () => {
+  it('should throw error when payload did not meet data type specification', () => {
     // Arrange
     const payload = {
       id: 123456,
