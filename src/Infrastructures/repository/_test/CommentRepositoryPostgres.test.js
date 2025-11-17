@@ -7,6 +7,7 @@ const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
+const DetailedComment = require('../../../Domains/comments/entities/DetailedComment');
 
 describe('CommentRepositoryPostgres', () => {
   afterEach(async () => {
@@ -124,6 +125,49 @@ describe('CommentRepositoryPostgres', () => {
       // Assert
       const comment = await CommentTableTestHelper.findCommentsId('comment-123');
       expect(comment[0].is_deleted).toEqual(true);
+    });
+  });
+
+  describe('getCommentByThreadId function', () => {
+    it('should return comments from a thread', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await ThreadTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      const addComment1 = {
+        id: 'comment-1', date: new Date('2021-08-07T17:19:09.775Z').toISOString(), content: 'comment 1', isDeleted: false,
+      };
+
+      const addComment2 = {
+        id: 'comment-2', date: new Date('2021-08-07T17:20:09.775Z').toISOString(), content: 'comment 2', isDeleted: false,
+      };
+
+      await CommentTableTestHelper.addComment(addComment1);
+      await CommentTableTestHelper.addComment(addComment2);
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action
+      const detailComments = await commentRepositoryPostgres.getCommentByThreadId('thread-123');
+
+      // Assert
+      expect(detailComments).toHaveLength(2);
+      expect(detailComments).toEqual([
+        new DetailedComment({
+          id: addComment1.id,
+          username: 'dicoding',
+          date: addComment1.date,
+          content: addComment1.content,
+          isDeleted: addComment1.isDeleted,
+        }),
+        new DetailedComment({
+          id: addComment2.id,
+          username: 'dicoding',
+          date: addComment2.date,
+          content: addComment2.content,
+          isDeleted: addComment2.isDeleted,
+        }),
+      ]);
     });
   });
 });
