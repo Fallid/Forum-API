@@ -20,14 +20,14 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    thread_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
     is_deleted: {
       type: 'BOOLEAN',
       notNull: true,
       default: false,
-    },
-    thread_id: {
-      type: 'VARCHAR(50)',
-      notNull: true,
     },
   });
 
@@ -39,6 +39,7 @@ exports.up = (pgm) => {
  * @param {import('node-pg-migrate').MigrationBuilder} pgm
 * */
 exports.down = (pgm) => {
+  pgm.dropConstraint('comments', 'fk_comments.thread_id_thread.id');
   pgm.dropConstraint('comments', 'fk_comments.owner_user.id');
   pgm.dropTable('comments');
 };
