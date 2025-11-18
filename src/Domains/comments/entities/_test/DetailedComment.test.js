@@ -1,4 +1,4 @@
-const DetailedComment = require('../entities/DetailedComment');
+const DetailedComment = require('../DetailedComment');
 
 describe('a DetailedComment entities', () => {
   it('should throw error when payload did not contain needed property', () => {
@@ -6,7 +6,7 @@ describe('a DetailedComment entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'dicoding',
-      date: '2021-08-08T07:22:33.555Z',
+      date: new Date('2021-08-08T07:22:33.555Z'),
       content: 'sebuah comment',
     };
     // Action and Assert
@@ -32,7 +32,7 @@ describe('a DetailedComment entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'dicoding',
-      date: '2021-08-08T07:22:33.555Z',
+      date: new Date('2021-08-08T07:22:33.555Z'),
       content: 'sebuah comment',
       isDeleted: false,
     };

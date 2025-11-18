@@ -31,7 +31,12 @@ class DetailedComment {
   _isPayloadMeetDataTypeSpecification({
     id, username, date, content, isDeleted,
   }) {
-    return (typeof id !== 'string' || typeof username !== 'string' || typeof date !== 'string' || typeof content !== 'string' || typeof isDeleted !== 'boolean');
+    return (
+      typeof id !== 'string'
+      || typeof username !== 'string'
+      || !(date instanceof Date)
+      || typeof content !== 'string'
+      || typeof isDeleted !== 'boolean');
   }
 }
 
