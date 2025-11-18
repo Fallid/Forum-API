@@ -135,11 +135,11 @@ describe('CommentRepositoryPostgres', () => {
       await ThreadTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       const addComment1 = {
-        id: 'comment-1', date: new Date('2021-08-07T17:19:09.775Z').toISOString(), content: 'comment 1', isDeleted: false,
+        id: 'comment-1', date: new Date('2021-08-07T17:19:09.775Z'), content: 'comment 1', isDeleted: false,
       };
 
       const addComment2 = {
-        id: 'comment-2', date: new Date('2021-08-07T17:20:09.775Z').toISOString(), content: 'comment 2', isDeleted: false,
+        id: 'comment-2', date: new Date('2021-08-07T17:20:09.775Z'), content: 'comment 2', isDeleted: false,
       };
 
       await CommentTableTestHelper.addComment(addComment1);

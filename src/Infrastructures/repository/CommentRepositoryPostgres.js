@@ -14,7 +14,7 @@ class CommentRepositoryPostgres extends CommentRepository {
   async addComment(addComment) {
     const { content, owner, threadId } = addComment;
     const id = `comment-${this._idGenerator()}`;
-    const date = new Date().toISOString();
+    const date = new Date();
 
     const query = {
       text: 'INSERT INTO comments (id, content, date, owner, thread_id) VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
@@ -76,7 +76,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     return result.rows.map((data) => new DetailedComment({
       id: data.id,
       username: data.username,
-      date: data.date.toISOString(),
+      date: data.date,
       content: data.content,
       isDeleted: data.is_deleted,
     }));
