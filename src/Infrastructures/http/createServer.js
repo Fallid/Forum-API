@@ -5,11 +5,12 @@ const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 const threads = require('../../Interfaces/http/api/threads');
 const comments = require('../../Interfaces/http/api/comments');
+const config = require('../../Commons/config');
 
 const createServer = async (container) => {
   const server = Hapi.server({
-    host: process.env.HOST,
-    port: process.env.PORT,
+    host: config.app.host,
+    port: config.app.port,
   });
 
   await server.register([

@@ -1,4 +1,5 @@
 const AuthenticationTokenManager = require('../../Applications/security/AuthenticationTokenManager');
+const config = require('../../Commons/config');
 const AuthenticationError = require('../../Commons/exceptions/AuthenticationError');
 const InvariantError = require('../../Commons/exceptions/InvariantError');
 
@@ -9,19 +10,19 @@ class JwtTokenManager extends AuthenticationTokenManager {
   }
 
   async createAccessToken(payload) {
-    return this._jwt.generate(payload, process.env.ACCESS_TOKEN_KEY, {
-      ttlSec: Number(process.env.ACCESS_TOKEN_AGE),
+    return this._jwt.generate(payload, config.auth.accessTokenKey, {
+      ttlSec: Number(config.auth.accessTokenAge),
     });
   }
 
   async createRefreshToken(payload) {
-    return this._jwt.generate(payload, process.env.REFRESH_TOKEN_KEY);
+    return this._jwt.generate(payload, config.auth.refreshTokenKey);
   }
 
   async verifyAccessToken(token) {
     try {
       const artifacts = this._jwt.decode(token);
-      this._jwt.verify(artifacts, process.env.ACCESS_TOKEN_KEY);
+      this._jwt.verify(artifacts, config.auth.accessTokenKey);
     } catch (error) {
       if (error.message.includes('Token expired') || error.message.includes('exp')) {
         throw new AuthenticationError('access token telah kadaluarsa');
@@ -33,7 +34,7 @@ class JwtTokenManager extends AuthenticationTokenManager {
   async verifyRefreshToken(token) {
     try {
       const artifacts = this._jwt.decode(token);
-      this._jwt.verify(artifacts, process.env.REFRESH_TOKEN_KEY);
+      this._jwt.verify(artifacts, config.auth.refreshTokenKey);
     } catch {
       throw new InvariantError('refresh token tidak valid');
     }
