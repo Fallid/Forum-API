@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['14.x', '22.x']
+        node-version: ['14.x']
   
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          scripts: |
+          script: |
             cd ~/Forum-API
             git pull origin master
             npm install 
