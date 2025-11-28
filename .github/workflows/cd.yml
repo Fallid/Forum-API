@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['14.x']
+        node-version: ['22.x']
   
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -28,8 +28,8 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             if [ -s "$NVM_DIR/nvm.sh" ]; then
               . "$NVM_DIR/nvm.sh"
-              nvm install 14.21.3
-              nvm use 14.21.3
+              nvm install 22.21.1
+              nvm use 22.21.1
             else
               echo "NVM not found, using system Node.js"
             fi
