@@ -9,27 +9,30 @@ const Jwt = require('@hapi/jwt');
 const pool = require('./database/postgres/pool');
 
 // service (repository, helper, manager, etc)
-const UserRepository = require('../Domains/users/UserRepository');
 const PasswordHash = require('../Applications/security/PasswordHash');
+const UserRepository = require('../Domains/users/UserRepository');
 const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
 const BcryptPasswordHash = require('./security/BcryptPasswordHash');
+const JwtTokenManager = require('./security/JwtTokenManager');
+const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
+const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
+const ThreadRepository = require('../Domains/threads/ThreadRepostiory');
+const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres');
+const CommentRepository = require('../Domains/comments/CommentRepository');
+const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
+const LikeRepository = require('../Domains/comment-likes/CommentLikeRepository');
+const CommentLikeRepositoryPostgres = require('./repository/CommentLikeRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
 const AuthenticationTokenManager = require('../Applications/security/AuthenticationTokenManager');
-const JwtTokenManager = require('./security/JwtTokenManager');
 const LoginUserUseCase = require('../Applications/use_case/LoginUserUseCase');
-const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
-const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
-const ThreadRepository = require('../Domains/threads/ThreadRepostiory');
-const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres');
 const AddThreadUseCase = require('../Applications/use_case/AddThreadUseCase');
-const CommentRepository = require('../Domains/comments/CommentRepository');
-const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
+const AddLikeUseCase = require('../Applications/use_case/AddLikeUseCase');
 const GetThreadByIdUseCase = require('../Applications/use_case/GetThreadByIdUseCase');
 
 // creating container
@@ -108,6 +111,20 @@ container.register([
       dependencies: [
         {
           concrete: Jwt.token,
+        },
+      ],
+    },
+  },
+  {
+    key: LikeRepository.name,
+    Class: CommentLikeRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
         },
       ],
     },
@@ -256,6 +273,27 @@ container.register([
         {
           name: 'threadRepository',
           internal: ThreadRepository.name,
+        },
+        {
+          name: 'authenticationTokenManager',
+          internal: AuthenticationTokenManager.name,
+        },
+      ],
+    },
+  },
+  {
+    key: AddLikeUseCase.name,
+    Class: AddLikeUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
         },
         {
           name: 'authenticationTokenManager',
