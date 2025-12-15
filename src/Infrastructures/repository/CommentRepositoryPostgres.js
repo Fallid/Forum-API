@@ -53,7 +53,9 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyCommentInThread(commentId, threadId) {
     const query = {
-      text: 'SELECT id FROM comments WHERE id = $1 AND thread_id = $2',
+      text: `SELECT 1 FROM comments cmt
+      INNER JOIN threads thr ON cmt.thread_id = thr.id
+      WHERE cmt.id = $1 AND thr.id = $2`,
       values: [commentId, threadId],
     };
 
