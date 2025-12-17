@@ -58,7 +58,7 @@ describe('AddLikeUseCase', () => {
     );
   });
 
-  it('should not add like when comment already liked', async () => {
+  it('should delete like when comment already liked', async () => {
     // Arrange
     const useCaseParams = {
       threadId: 'thread-123',
@@ -83,6 +83,8 @@ describe('AddLikeUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockLikeRepository.verifyExistingCommentLike = jest.fn()
       .mockImplementation(() => Promise.resolve(true));
+    mockLikeRepository.deleteLike = jest.fn()
+      .mockImplementation(() => Promise.resolve());
     mockLikeRepository.addLike = jest.fn().mockImplementation(() => Promise.resolve({ status: 'success' }));
 
     // creating use case instance
@@ -99,6 +101,7 @@ describe('AddLikeUseCase', () => {
     expect(mockLikeRepository.verifyExistingCommentLike).toBeCalledWith(
       new AddLike({ commentId: useCaseParams.commentId, owner: 'user-123' }),
     );
+    expect(mockLikeRepository.deleteLike).toBeCalledWith(useCaseParams.commentId, 'user-123');
     expect(mockLikeRepository.addLike).not.toBeCalled();
   });
 });
