@@ -111,6 +111,31 @@ describe('CommentRepositoryPostgres', () => {
     });
   });
 
+  describe('verifyCommentInThread', () => {
+    it('should throw NotFoundError when comment is not belongs to thread', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentTableTestHelper.addComment({ id: 'comment-123', owner: 'user-123' });
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentRepositoryPostgres.verifyCommentInThread('comment-123', 'thread-456')).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when comment is belongs to thread ', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentTableTestHelper.addComment({ id: 'comment-123' });
+      const commentLikeRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(commentLikeRepositoryPostgres.verifyCommentInThread('comment-123', 'thread-123'))
+        .resolves.not.toThrowError(NotFoundError);
+    });
+  });
+
   describe('deleteComment function', () => {
     it('should soft delete comment correctly', async () => {
       // Arrange

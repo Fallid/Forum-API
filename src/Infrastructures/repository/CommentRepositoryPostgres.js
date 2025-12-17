@@ -51,6 +51,21 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
+  async verifyCommentInThread(commentId, threadId) {
+    const query = {
+      text: `SELECT 1 FROM comments cmt
+      INNER JOIN threads thr ON cmt.thread_id = thr.id
+      WHERE cmt.id = $1 AND thr.id = $2`,
+      values: [commentId, threadId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('comment tidak ditemukan');
+    }
+  }
+
   async deleteComment(commentId) {
     const query = {
       text: 'UPDATE comments SET is_deleted = true WHERE id = $1',
