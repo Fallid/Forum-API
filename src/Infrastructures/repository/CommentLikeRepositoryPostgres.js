@@ -1,4 +1,5 @@
 const InvariantError = require('../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const LikeRepository = require('../../Domains/comment-likes/CommentLikeRepository');
 
 class CommentLikeRepositoryPostgres extends LikeRepository {
@@ -31,10 +32,42 @@ class CommentLikeRepositoryPostgres extends LikeRepository {
     const result = await this._pool.query(query);
 
     if (result.rows.length) {
-      throw new InvariantError('Comment sudah dilike');
+      return true;
     }
 
     return false;
+  }
+
+  async deleteLike(commentId, owner) {
+    const query = {
+      text: 'DELETE FROM comment_likes WHERE comment_id = $1 AND owner = $2 RETURNING id',
+      values: [commentId, owner],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Tidak bisa menghapus, like tidak ada');
+    }
+  }
+
+  async getLikeCountsByThreadId(threadId) {
+    const query = {
+      text: `SELECT cl.comment_id, COUNT(*)::int as like_count
+      FROM comment_likes cl
+      INNER JOIN comments c ON cl.comment_id = c.id
+      WHERE c.thread_id = $1
+      GROUP BY cl.comment_id`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+
+    // Convert to object map for easy lookup: { commentId: likeCount }
+    return result.rows.reduce((acc, row) => {
+      acc[row.comment_id] = row.like_count;
+      return acc;
+    }, {});
   }
 }
 
